@@ -1,12 +1,16 @@
+import { Suspense } from "react";
+import FindDoctorsClient from "@/components/doctors/FindDoctorsClient";
+
 export const metadata = { title: "Find Doctors" };
 
 export default function FindDoctorsPage() {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4">
-      <p className="text-base-content/70">
-        Find Doctors page — search, sort, and pagination coming in Client Stage
-        4.
-      </p>
-    </div>
+    <Suspense
+      fallback={
+        <div className="py-20 text-center text-base-content/50">Loading...</div>
+      }
+    >
+      <FindDoctorsClient />
+    </Suspense>
   );
 }
