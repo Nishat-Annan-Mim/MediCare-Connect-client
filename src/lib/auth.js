@@ -1,18 +1,38 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { nextCookies } from "better-auth/next-js";
 import { MongoClient } from "mongodb";
 
-// MongoDB connection for Better Auth's own tables (users, sessions, accounts)
 const mongoUri = process.env.MONGO_URI;
 if (!mongoUri) {
   throw new Error("MONGO_URI environment variable is required for Better Auth");
 }
 
 const client = new MongoClient(mongoUri);
-const db = client.db("medicare-connect"); // Same database as your app, separate collections
+const db = client.db("medicare-connect");
+
+// Helper: push a newly created Better Auth user into the Express API's Users collection
+async function syncUserToApi(user) {
+  try {
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    await fetch(`${apiUrl}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: user.name || "",
+        email: user.email,
+        photo: user.image || "",
+        role: "patient",
+      }),
+    });
+  } catch (error) {
+    console.error("Failed to sync user to Express API:", error.message);
+  }
+}
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db),
+  database: mongodbAdapter(db, { client }),
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 
@@ -29,31 +49,17 @@ export const auth = betterAuth({
     },
   },
 
-  callbacks: {
-    // Called after user signs up or logs in via OAuth
-    async onSuccess(ctx) {
-      // After successful auth, sync the user into your Express API's Users collection
-      // so the doctor/patient/admin roles can be assigned there
-      const { user } = ctx;
-
-      try {
-        await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/users`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: user.name || "",
-              email: user.email,
-              photo: user.image || "",
-              role: "patient", // default role on first signup
-            }),
-          },
-        );
-      } catch (error) {
-        console.error("Failed to sync user to Express API:", error);
-        // Don't fail auth if sync fails — user can still log in locally
-      }
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          await syncUserToApi(user);
+        },
+      },
     },
   },
+
+  // Must be the last plugin — handles setting auth cookies correctly
+  // inside Next.js Server Actions / Route Handlers.
+  plugins: [nextCookies()],
 });
