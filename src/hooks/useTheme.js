@@ -5,21 +5,24 @@ import { useState, useEffect } from "react";
 const THEME_KEY = "medicare-theme";
 
 export function useTheme() {
-  const [theme, setTheme] = useState("medicareLight");
+  const [theme, setTheme] = useState(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem(THEME_KEY);
-    const initial = stored || "medicareLight";
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
+    const current =
+      document.documentElement.getAttribute("data-theme") || "medicareLight";
+    setTheme(current);
   }, []);
 
   const toggleTheme = () => {
-    const next = theme === "medicareLight" ? "medicareDark" : "medicareLight";
+    const next = theme === "medicareDark" ? "medicareLight" : "medicareDark";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem(THEME_KEY, next);
   };
 
-  return { theme, toggleTheme, isDark: theme === "medicareDark" };
+  return {
+    theme: theme || "medicareLight",
+    toggleTheme,
+    isDark: theme === "medicareDark",
+  };
 }
