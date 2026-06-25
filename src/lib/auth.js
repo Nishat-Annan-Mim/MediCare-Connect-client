@@ -49,6 +49,17 @@ export const auth = betterAuth({
     },
   },
 
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "patient",
+        input: false,
+      },
+    },
+  },
+
   databaseHooks: {
     user: {
       create: {
