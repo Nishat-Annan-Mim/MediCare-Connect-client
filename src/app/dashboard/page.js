@@ -3,6 +3,7 @@
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import PatientOverview from "@/components/dashboard/PatientOverview";
 import DoctorOverview from "@/components/dashboard/DoctorOverview";
+import AdminOverview from "@/components/dashboard/AdminOverview";
 
 export default function DashboardOverviewPage() {
   const { user, isLoading } = useRequireAuth();
@@ -20,13 +21,7 @@ export default function DashboardOverviewPage() {
   }
 
   if (user.role === "admin") {
-    return (
-      <div className="rounded-box border border-base-200 bg-base-100 p-6">
-        <p className="text-base-content/60">
-          Admin dashboard overview is coming in the next build stage.
-        </p>
-      </div>
-    );
+    return <AdminOverview />;
   }
 
   return <PatientOverview user={user} />;
