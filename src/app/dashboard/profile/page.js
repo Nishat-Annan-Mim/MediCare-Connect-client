@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { FiUser, FiMail, FiPhone } from "react-icons/fi";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
+import DoctorProfileFields from "@/components/dashboard/DoctorProfileFields";
 import api from "@/lib/api";
 
 export default function ProfilePage() {
@@ -45,7 +46,9 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-xl">
       <h1 className="text-2xl font-bold text-base-content">My Profile</h1>
-      <p className="mt-1 text-base-content/60">Manage your personal information</p>
+      <p className="mt-1 text-base-content/60">
+        Manage your personal information
+      </p>
 
       <form
         onSubmit={handleSubmit}
@@ -66,7 +69,9 @@ export default function ProfilePage() {
           <div>
             <p className="font-semibold text-base-content">{user.name}</p>
             <p className="text-sm text-base-content/50">{user.email}</p>
-            <span className="badge badge-sm badge-outline mt-1 capitalize">{user.role}</span>
+            <span className="badge badge-sm badge-outline mt-1 capitalize">
+              {user.role}
+            </span>
           </div>
         </div>
 
@@ -108,10 +113,20 @@ export default function ProfilePage() {
           <option value="other">Other</option>
         </select>
 
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-          {isSubmitting ? <span className="loading loading-spinner loading-sm" /> : "Save Changes"}
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <span className="loading loading-spinner loading-sm" />
+          ) : (
+            "Save Changes"
+          )}
         </button>
       </form>
+
+      {user.role === "doctor" && <DoctorProfileFields />}
     </div>
   );
 }
