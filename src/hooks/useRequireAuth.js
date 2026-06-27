@@ -19,7 +19,7 @@ export function useRequireAuth(allowedRoles = null) {
     if (allowedRoles && user?.role && !allowedRoles.includes(user.role)) {
       router.replace("/dashboard");
     }
-  }, [isLoading, isLoggedIn, user, allowedRoles, router]);
+  }, [isLoading, isLoggedIn, user?.role, allowedRoles, router]);
 
   return { user, isLoggedIn, isLoading };
 }

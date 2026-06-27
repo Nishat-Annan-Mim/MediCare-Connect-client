@@ -23,7 +23,11 @@ async function syncUserToApi(user) {
         name: user.name || "",
         email: user.email,
         photo: user.image || "",
-        role: "patient",
+        // respect any role set on the Better Auth user (fallback to patient)
+        role:
+          user.role && ["patient", "doctor", "admin"].includes(user.role)
+            ? user.role
+            : "patient",
       }),
     });
   } catch (error) {
@@ -55,7 +59,8 @@ export const auth = betterAuth({
         type: "string",
         required: false,
         defaultValue: "patient",
-        input: false,
+        // allow the role field to be provided by any client UI (e.g. register form)
+        input: true,
       },
     },
   },

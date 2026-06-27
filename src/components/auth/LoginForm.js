@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { FiMail, FiLock } from "react-icons/fi";
+import { FiMail } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
+import PasswordInput from "@/components/shared/PasswordInput";
 import { signIn } from "@/lib/auth-client";
 
 export default function LoginForm() {
@@ -94,28 +95,27 @@ export default function LoginForm() {
             />
           </label>
 
-          <label className="input input-bordered flex items-center gap-2">
-            <FiLock className="text-base-content/40" />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              className="grow"
-              value={form.password}
-              onChange={handleChange}
-              required
-              minLength={8}
-            />
-          </label>
+          <PasswordInput value={form.password} onChange={handleChange} />
 
-          <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
-            {isSubmitting ? <span className="loading loading-spinner loading-sm" /> : "Log In"}
+          <button
+            type="submit"
+            className="btn btn-primary w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="loading loading-spinner loading-sm" />
+            ) : (
+              "Log In"
+            )}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-base-content/60">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-medium text-primary hover:underline">
+          <Link
+            href="/register"
+            className="font-medium text-primary hover:underline"
+          >
             Register
           </Link>
         </p>

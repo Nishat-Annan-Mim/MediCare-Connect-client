@@ -20,7 +20,8 @@ export default function ProfilePage() {
         gender: user.gender || "",
       });
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email, user?.phone, user?.gender]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

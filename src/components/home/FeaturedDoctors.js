@@ -4,7 +4,11 @@ import DoctorCard from "@/components/shared/DoctorCard";
 import { getDoctors } from "@/lib/doctors";
 
 export default async function FeaturedDoctors() {
-  const { data: doctors } = await getDoctors({ limit: 4, sortBy: "rating", order: "desc" });
+  const { data: doctors } = await getDoctors({
+    limit: 4,
+    sortBy: "rating",
+    order: "desc",
+  });
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
@@ -38,10 +42,13 @@ export default async function FeaturedDoctors() {
             No doctors have joined yet
           </p>
           <p className="mt-1 max-w-sm text-sm text-base-content/50">
-            Be the first to register as a doctor and start accepting patients
-            on MediCare Connect.
+            Be the first to register as a doctor and start accepting patients on
+            MediCare Connect.
           </p>
-          <Link href="/register" className="btn btn-primary btn-sm mt-5">
+          <Link
+            href="/register?role=doctor"
+            className="btn btn-primary btn-sm mt-5"
+          >
             Join as a Doctor
           </Link>
         </div>
